@@ -1,11 +1,115 @@
 import { test, request, APIRequestContext, expect } from "@playwright/test";
 
-export const login = async (request: APIRequestContext): Promise<string> => {
+export const loginAdmin = async (
+  request: APIRequestContext
+): Promise<string> => {
   const response = await request.post(
     "https://novalog-lxg5z.ondigitalocean.app/api/api/login",
     {
       data: {
         username: "admin",
+        password: "admin123",
+      },
+    }
+  );
+  const responseBody = await response.json();
+  expect(response.status()).toBe(200);
+  return responseBody.token;
+};
+
+export const loginAdmin0 = async (
+  request: APIRequestContext
+): Promise<string> => {
+  const response = await request.post(
+    "https://novalog-lxg5z.ondigitalocean.app/api/api/login",
+    {
+      data: {
+        username: "admin0",
+        password: "admin123",
+      },
+    }
+  );
+  const responseBody = await response.json();
+  expect(response.status()).toBe(200);
+  return responseBody.token;
+};
+
+export const loginAdmin1 = async (
+  request: APIRequestContext
+): Promise<string> => {
+  const response = await request.post(
+    "https://novalog-lxg5z.ondigitalocean.app/api/api/login",
+    {
+      data: {
+        username: "admin1",
+        password: "admin123",
+      },
+    }
+  );
+  const responseBody = await response.json();
+  expect(response.status()).toBe(200);
+  return responseBody.token;
+};
+
+export const loginAdmin2 = async (
+  request: APIRequestContext
+): Promise<string> => {
+  const response = await request.post(
+    "https://novalog-lxg5z.ondigitalocean.app/api/api/login",
+    {
+      data: {
+        username: "admin2",
+        password: "admin123",
+      },
+    }
+  );
+  const responseBody = await response.json();
+  expect(response.status()).toBe(200);
+  return responseBody.token;
+};
+
+export const loginAdmin3 = async (
+  request: APIRequestContext
+): Promise<string> => {
+  const response = await request.post(
+    "https://novalog-lxg5z.ondigitalocean.app/api/api/login",
+    {
+      data: {
+        username: "admin3",
+        password: "admin123",
+      },
+    }
+  );
+  const responseBody = await response.json();
+  expect(response.status()).toBe(200);
+  return responseBody.token;
+};
+
+export const loginAdmin4 = async (
+  request: APIRequestContext
+): Promise<string> => {
+  const response = await request.post(
+    "https://novalog-lxg5z.ondigitalocean.app/api/api/login",
+    {
+      data: {
+        username: "admin4",
+        password: "admin123",
+      },
+    }
+  );
+  const responseBody = await response.json();
+  expect(response.status()).toBe(200);
+  return responseBody.token;
+};
+
+export const loginAdmin5 = async (
+  request: APIRequestContext
+): Promise<string> => {
+  const response = await request.post(
+    "https://novalog-lxg5z.ondigitalocean.app/api/api/login",
+    {
+      data: {
+        username: "admin5",
         password: "admin123",
       },
     }
@@ -79,4 +183,27 @@ export const deleteNomination = async (
     }
   );
   expect(response.status()).toBe(204);
+};
+
+export const getNominations = async (
+  request: APIRequestContext,
+  token: string,
+  purchaseId: string
+) => {
+  const response = await request.get(
+    `https://novalog-lxg5z.ondigitalocean.app/api/api/nominations/?offset=0&status=pending&purchase=${purchaseId}&limit=20`,
+    {
+      headers: {
+        Authorization: token,
+      },
+    }
+  );
+  const responseBody = await response.json();
+  const nominationsIds: number[] = [];
+
+  for (const nomination of responseBody.data) {
+    nominationsIds.push(nomination.id);
+  }
+
+  return nominationsIds;
 };
