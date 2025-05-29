@@ -1,4 +1,4 @@
-import { test, request, APIRequestContext, expect } from "@playwright/test";
+import { APIRequestContext, expect } from "@playwright/test";
 
 export const loginAdmin = async (
   request: APIRequestContext

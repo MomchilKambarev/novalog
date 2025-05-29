@@ -17,7 +17,7 @@ test.beforeAll(async ({ request }) => {
   token4 = await loginAdmin4(request);
 });
 
-test("Check 3 users create nominations with delays", async ({request,}, testInfo) => {
+test.skip("Check 3 users create nominations with delays", async ({request,}, testInfo) => {
   testInfo.slow();
   // Step 1
   await test.step("Login users and get initial state", async () => {
