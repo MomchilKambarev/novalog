@@ -70,7 +70,7 @@ test("Check 2 users create nominations with delays", async ({ request }) => {
 
   // Step 4: Wait for 4 seconds before second user starts
   await test.step("Wait before second user starts", async () => {
-    await new Promise((resolve) => setTimeout(resolve, 4000));
+    await new Promise((resolve) => setTimeout(resolve, 2500));
   });
 
   // Step 5: Second user creates first nomination
