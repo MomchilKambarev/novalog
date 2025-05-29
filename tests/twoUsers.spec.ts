@@ -1,12 +1,5 @@
 import { test, expect } from "@playwright/test";
-import {
-  createNomination,
-  getPurchases,
-  loginAdmin,
-  loginAdmin0,
-  getNominations,
-  deleteNomination,
-} from "../helpers/requests";
+import { createNomination, getPurchases, loginAdmin, loginAdmin0, getNominations, deleteNomination } from "../helpers/requests";
 
 let token: string;
 let token1: string;
@@ -22,30 +15,24 @@ test.beforeAll(async ({ request }) => {
   token1 = await loginAdmin0(request);
 });
 
-test("Create and verify 2 users create nominations with delays", async ({
-  request,
-}) => {
+test("Check 2 users create nominations with delays", async ({ request }) => {
   // Step 1
-  await test.step("Login users and get initial state", async () => {
+  await test.step("Get purchase initial state", async () => {
     const responseBody = await getPurchases(request, token);
     purchase.id = responseBody.data[0].id;
     initialQuantity = responseBody.data[0].availableQuantity;
-    console.log("Initial purchase:", {
-      id: purchase.id,
-      quantity: initialQuantity,
-    });
+
+    console.log("Initial purchase:", { id: purchase.id, quantity: initialQuantity });
+    
     expect(initialQuantity).toBe(10000000);
   });
 
   // Step 2
   await test.step("First user creates first nomination", async () => {
-    const nominationResponse = await createNomination(
-      request,
-      token,
-      purchase.id
-    );
+    const nominationResponse = await createNomination(request, token, purchase.id);
+    
     console.log(
-      "First user - First nomination:",
+      "NOMINATION 1:",
       `\noriginatingPurchase.id: ${nominationResponse.originatingPurchase.id},
       \nnomination.id: ${nominationResponse.id},
       \navailableQuantity: ${nominationResponse.originatingPurchase.availableQuantity}`
@@ -53,11 +40,9 @@ test("Create and verify 2 users create nominations with delays", async ({
 
     const updatedPurchase = await getPurchases(request, token);
     const newQuantity = updatedPurchase.data[0].availableQuantity;
-    console.log("After first user first nomination:", {
-      purchaseId: purchase.id,
-      newQuantity,
-      expectedQuantity: 9975000,
-    });
+
+    console.log("After first nomination:", {purchaseId: purchase.id, newQuantity, expectedQuantity: 9975000});
+    
     expect(newQuantity).toBe(9975000);
   });
 
@@ -69,7 +54,7 @@ test("Create and verify 2 users create nominations with delays", async ({
       purchase.id
     );
     console.log(
-      "First user - Second nomination:",
+      "NOMINATION 2:",
       `\noriginatingPurchase.id: ${nominationResponse.originatingPurchase.id},
       \nnomination.id: ${nominationResponse.id},
       \navailableQuantity: ${nominationResponse.originatingPurchase.availableQuantity}`
@@ -77,11 +62,9 @@ test("Create and verify 2 users create nominations with delays", async ({
 
     const updatedPurchase = await getPurchases(request, token);
     const newQuantity = updatedPurchase.data[0].availableQuantity;
-    console.log("After first user second nomination:", {
-      purchaseId: purchase.id,
-      newQuantity,
-      expectedQuantity: 9950000,
-    });
+
+    console.log("After second nomination:", {purchaseId: purchase.id, newQuantity, expectedQuantity: 9950000});
+    
     expect(newQuantity).toBe(9950000);
   });
 
@@ -92,13 +75,10 @@ test("Create and verify 2 users create nominations with delays", async ({
 
   // Step 5: Second user creates first nomination
   await test.step("Second user creates first nomination", async () => {
-    const nominationResponse = await createNomination(
-      request,
-      token1,
-      purchase.id
-    );
+    const nominationResponse = await createNomination(request, token1, purchase.id);
+
     console.log(
-      "Second user - First nomination:",
+      "NOMINATION 3:",
       `\noriginatingPurchase.id: ${nominationResponse.originatingPurchase.id},
       \nnomination.id: ${nominationResponse.id},
       \navailableQuantity: ${nominationResponse.originatingPurchase.availableQuantity}`
@@ -106,23 +86,18 @@ test("Create and verify 2 users create nominations with delays", async ({
 
     const updatedPurchase = await getPurchases(request, token1);
     const newQuantity = updatedPurchase.data[0].availableQuantity;
-    console.log("After second user first nomination:", {
-      purchaseId: purchase.id,
-      newQuantity,
-      expectedQuantity: 9925000,
-    });
+
+    console.log("After third nomination:", {purchaseId: purchase.id, newQuantity, expectedQuantity: 9925000});
+    
     expect(newQuantity).toBe(9925000);
   });
 
   // Step 6: Second user creates second nomination
   await test.step("Second user creates second nomination", async () => {
-    const nominationResponse = await createNomination(
-      request,
-      token1,
-      purchase.id
-    );
+    const nominationResponse = await createNomination(request, token1, purchase.id);
+
     console.log(
-      "Second user - Second nomination:",
+      "NOMINATION 4:",
       `\noriginatingPurchase.id: ${nominationResponse.originatingPurchase.id},
       \nnomination.id: ${nominationResponse.id},
       \navailableQuantity: ${nominationResponse.originatingPurchase.availableQuantity}`
@@ -142,6 +117,7 @@ test("Create and verify 2 users create nominations with delays", async ({
 test.afterAll(async ({ request }) => {
   await new Promise((resolve) => setTimeout(resolve, 1000));
   const nominationIds = await getNominations(request, token, purchase.id);
+
   console.log("Nomination IDs:", nominationIds);
   console.log("Found nominations to delete:", nominationIds.length);
 
@@ -152,10 +128,8 @@ test.afterAll(async ({ request }) => {
   // Verify final quantity is back to initial
   const finalPurchase = await getPurchases(request, token);
   const finalQuantity = finalPurchase.data[0].availableQuantity;
-  console.log("Final state:", {
-    purchaseId: purchase.id,
-    finalQuantity,
-    initialQuantity,
-  });
+  
+  console.log("Final state:", { purchaseId: purchase.id, finalQuantity, initialQuantity });
+
   expect(finalQuantity).toBe(initialQuantity);
 });
